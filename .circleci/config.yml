@@ -36,7 +36,7 @@ jobs:
   #         command: |
   #           yarn lint
 
-  build:
+  build-publish:
     <<: *defaults
     steps:
       - attach_workspace:
@@ -49,17 +49,8 @@ jobs:
           command: |
             docker build . -t ghcr.io/markormesher/darwin-to-mqtt:$(git describe)
             docker image ls
-
-  maybe-publish:
-    <<: *defaults
-    steps:
-      - attach_workspace:
-          at: .
-      - setup_remote_docker:
-          docker_layer_caching: true
-          version: 20.10.12
       - run:
-          name: Maybe publish
+          name: Maybe publish Docker image
           command: |
             # publish tagged commits only
             if ! git describe --exact-match HEAD > /dev/null 2>&1; then echo "Not on tagged commit - nothing to do"; exit 0; fi
@@ -74,10 +65,7 @@ workflows:
       # - lint:
       #     requires:
       #       - setup
-      - build:
+      - build-publish:
           requires:
             - setup
-      - maybe-publish:
-          requires:
             # - lint
-            - build
