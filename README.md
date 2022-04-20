@@ -1,6 +1,12 @@
+![CircleCI](https://img.shields.io/circleci/build/github/markormesher/darwin-to-mqtt)
+
 # darwin-to-mqtt
 
 A simple utility to query the UK National Rail [Darwin API](https://www.nationalrail.co.uk/100296.aspx) for departures from your local station and post the results to an MQTT server. Queries are executed via [@mattsalt](https://github.com/mattsalt)'s [national-rail-darwin](https://github.com/mattsalt/national-rail-darwin) library, which does all the hard work here.
+
+:rocket: Jump to [quick-start example](#quick-start-docker-compose-example).
+
+:whale: See releases on [ghcr.io](https://ghcr.io/markormesher/darwin-to-mqtt).
 
 ## Configuration via Environment Variables
 
@@ -37,7 +43,7 @@ ${prefix}/journey_${rowNum}/arrival_time_actual = hh:mm time or "Cancelled"
 ${prefix}/journey_${rowNum}/arrival_on_time = "true" or "false"
 ```
 
-## Docker Compose Example
+## Quick-Start Docker-Compose Example
 
 This example would report departures from Barnehurst (BNH) to Charing Cross (CHX), Victoria (VIC) or Cannon Street (CST).
 
