@@ -48,6 +48,8 @@ ${prefix}/journey_${rowNum}/arrival_on_time = "true" or "false"
 This example would report departures from Barnehurst (BNH) to Charing Cross (CHX), Victoria (VIC) or Cannon Street (CST).
 
 ```yaml
+version: "3.8"
+
 services:
   darwin-to-mqtt:
     image: ghcr.io/markormesher/darwin-to-mqtt:VERSION
