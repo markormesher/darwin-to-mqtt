@@ -10,7 +10,7 @@ A simple utility to query the UK National Rail [Darwin API](https://www.national
 
 ## Configuration via Environment Variables
 
-All arguments are requires if they do not have a default value listed below. 3-letter station codes can be found by searching on National Rail's [journey planner](https://www.nationalrail.co.uk).
+All arguments are required if they do not have a default value listed below. 3-letter station codes can be found by searching on National Rail's [journey planner](https://www.nationalrail.co.uk).
 
 - `DARWIN_TOKEN` - your Darwin API token, which you can sign up for [here](http://realtime.nationalrail.co.uk/OpenLDBWSRegistration).
 - `MQTT_HOST` - must include the `mqtt://...` prefix and any non-default port number.
