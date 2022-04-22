@@ -50,7 +50,7 @@ This example would report departures from Barnehurst (BNH) to Charing Cross (CHX
 ```yaml
 services:
   darwin-to-mqtt:
-    image: markormesher/darwin-to-mqtt
+    image: ghcr.io/markormesher/darwin-to-mqtt
     environment:
       - DARWIN_TOKEN=abc
       - MQTT_HOST=mqtt://your-mqtt-host
