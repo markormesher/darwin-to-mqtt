@@ -28,7 +28,7 @@ mqttClient.on("disconnect", () => {
 });
 mqttClient.on("reconnect", () => console.log("MQTT reconnecting"));
 mqttClient.on("offline", () => console.log("MQTT server offline"));
-mqttClient.on("error", (error) => logger.error("MQTT error", { error }));
+mqttClient.on("error", (error) => console.log("MQTT error", { error }));
 
 function mqttPublish(topic, message) {
   if (!mqttClient.connected) {
