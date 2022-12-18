@@ -18,6 +18,8 @@ All arguments are required if they do not have a default value listed below. 3-l
 - `LOCAL_STATION` - 3-letter station code for your local station, which the tool will show departures from.
 - `DEST_STATIONS` - comma-separated list of 3-letter station codes to show journeys for.
 - `ROWS_TO_PUBLISH` - maximum number of journeys to publish, defaults to 5.
+- `REFRESH_INTERVAL_MS` - how often to update the data, defaults to 60,000 (1 minute), which is also the minimum allowed value.
+- `HEALTH_CHECK_SERVER_PORT` - HTTP port to provide a health check endpoint on, defaults to 8080.
 
 ## MQTT Topics and Messages
 
@@ -61,3 +63,7 @@ services:
       - DEST_STATIONS=CHX,VIC,CST
       - ROWS_TO_PUBLISH=5
 ```
+
+## Health Check
+
+Unless disabled by setting the environment variable `HEALTH_CHECK_SERVER_PORT` to `-1`, a basic health check endpoint is available at `/health` on the port specified. If a successful update as run in the last `2 * REFRESH_INTERVAL_MS` it will return 200, otherwise 500.

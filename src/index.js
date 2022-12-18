@@ -1,5 +1,6 @@
 const Darwin = require("national-rail-darwin");
 const mqtt = require("mqtt");
+const http = require("http");
 const darwin = new Darwin();
 
 const MQTT_HOST = process.env.MQTT_HOST;
@@ -7,6 +8,28 @@ const TOPIC_PREFIX = process.env.TOPIC_PREFIX || "darwin/state";
 const LOCAL_STATION = process.env.LOCAL_STATION;
 const DEST_STATIONS = process.env.DEST_STATIONS.split(",");
 const ROWS_TO_PUBLISH = parseInt(process.env.ROWS_TO_PUBLISH || "5");
+const REFRESH_INTERVAL_MS = Math.max(parseInt(process.env.REFRESH_INTERVAL_MS || "60000"), 60000);
+const HEALTH_CHECK_SERVER_PORT = parseInt(process.env.HEALTH_CHECK_SERVER_PORT) || 8080;
+
+// health check
+let lastSuccessMs = 0;
+if (HEALTH_CHECK_SERVER_PORT > 0) {
+  http
+    .createServer((req, res) => {
+      if (req.method == "GET" && req.url == "/health") {
+        const nowMs = new Date().getTime();
+        const sinceLastSuccessMs = nowMs - lastSuccessMs;
+        if (sinceLastSuccessMs <= REFRESH_INTERVAL_MS * 2) {
+          res.writeHead(200).end();
+        } else {
+          res.writeHead(500).end();
+        }
+      } else {
+        res.writeHead(404).end();
+      }
+    })
+    .listen(HEALTH_CHECK_SERVER_PORT);
+}
 
 const availabilityTopic = `${TOPIC_PREFIX}/availability`;
 
@@ -154,4 +177,4 @@ function publishDeparture(
 }
 
 updateDepartures();
-setInterval(updateDepartures, 60 * 1000);
+setInterval(updateDepartures, REFRESH_INTERVAL_MS);
