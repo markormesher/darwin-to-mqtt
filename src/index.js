@@ -123,6 +123,8 @@ function updateDepartures() {
       publishDeparture(i);
     }
 
+    lastSuccessMs = new Date().getTime();
+
     mqttPublish(`${TOPIC_PREFIX}/last_seen`, new Date().toISOString());
     console.log(`Published journeys at ${new Date().toISOString()}`);
   });
