@@ -55,24 +55,24 @@ async function updateDepartures() {
         break;
       }
 
-      const scheduledDepartureTime = service.std;
-      const expectedDepartureTime = service.etd;
-      const departureOnTime = expectedDepartureTime == "On time";
-      const departureTime = departureOnTime ? scheduledDepartureTime : expectedDepartureTime;
+      const departureTimeScheduled = service.std;
+      const departureTimeExpected = service.etd;
+      const departureOnTime = departureTimeExpected == "On time";
+      const departureTimeActual = departureOnTime ? departureTimeScheduled : departureTimeExpected;
 
-      const scheduledArrivalTime = arrivalStation.st;
-      const expectedArrivalTime = arrivalStation.et;
-      const arrivalOnTime = expectedArrivalTime == "On time";
-      const arrivalTime = arrivalOnTime ? scheduledArrivalTime : expectedArrivalTime;
+      const arrivalTimeScheduled = arrivalStation.st;
+      const arrivalTimeExpected = arrivalStation.et;
+      const arrivalOnTime = arrivalTimeExpected == "On time";
+      const arrivalTimeActual = arrivalOnTime ? arrivalTimeScheduled : arrivalTimeExpected;
 
       publishJourney(
         rowNum,
-        arrivalStation.crs,
-        scheduledDepartureTime,
-        departureTime,
+        departureTimeScheduled,
+        departureTimeActual,
         departureOnTime,
-        scheduledArrivalTime,
-        arrivalTime,
+        arrivalStation.crs,
+        arrivalTimeScheduled,
+        arrivalTimeActual,
         arrivalOnTime,
       );
     }
@@ -92,29 +92,43 @@ async function updateDepartures() {
 
 function publishJourney(
   rowNum: number,
-  destination?: string,
-  scheduledDepartureTime?: string,
-  departureTime?: string,
+  departureTimeScheduled?: string,
+  departureTimeActual?: string,
   departureOnTime?: boolean,
-  scheduledArrivalTime?: string,
-  arrivalTime?: string,
+  arrivalStation?: string,
+  arrivalTimeScheduled?: string,
+  arrivalTimeActual?: string,
   arrivalOnTime?: boolean,
 ) {
   mqttPublish(`/journey_${rowNum}/departure_station`, LOCAL_STATION);
-  mqttPublish(`/journey_${rowNum}/departure_time_scheduled`, scheduledDepartureTime || "");
-  mqttPublish(`/journey_${rowNum}/departure_time_actual`, departureTime || "");
+  mqttPublish(`/journey_${rowNum}/departure_time_scheduled`, departureTimeScheduled || "");
+  mqttPublish(`/journey_${rowNum}/departure_time_actual`, departureTimeActual || "");
   mqttPublish(
     `/journey_${rowNum}/departure_on_time`,
     departureOnTime === undefined || departureOnTime === null ? "" : "" + departureOnTime,
   );
 
-  mqttPublish(`/journey_${rowNum}/arrival_station`, destination || "");
-  mqttPublish(`/journey_${rowNum}/arrival_time_scheduled`, scheduledArrivalTime || "");
-  mqttPublish(`/journey_${rowNum}/arrival_time_actual`, arrivalTime || "");
+  mqttPublish(`/journey_${rowNum}/arrival_station`, arrivalStation || "");
+  mqttPublish(`/journey_${rowNum}/arrival_time_scheduled`, arrivalTimeScheduled || "");
+  mqttPublish(`/journey_${rowNum}/arrival_time_actual`, arrivalTimeActual || "");
   mqttPublish(
     `/journey_${rowNum}/arrival_on_time`,
     arrivalOnTime === undefined || arrivalOnTime === null ? "" : "" + arrivalOnTime,
   );
+
+  const jsonPayload = arrivalStation
+    ? {
+        departureStation: LOCAL_STATION,
+        departureTimeScheduled,
+        departureTimeActual,
+        departureOnTime,
+        arrivalStation,
+        arrivalTimeScheduled,
+        arrivalTimeActual,
+        arrivalOnTime,
+      }
+    : null;
+  mqttPublish(`/journey_${rowNum}/json`, jsonPayload ? JSON.stringify(jsonPayload) : "");
 }
 
 updateDepartures();

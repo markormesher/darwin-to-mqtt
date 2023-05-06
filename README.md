@@ -26,7 +26,7 @@ All arguments are required if they do not have a default value listed below. 3-l
 ### System Information
 
 ```
-${prefix}/availability = "online" or "offline", retained as birth/last will message
+${prefix}/status = "online" or "offline", retained as birth/last will message
 ${prefix}/last_seen = ISO datetime string of the last time journeys were published
 ```
 
@@ -43,6 +43,7 @@ ${prefix}/journey_${rowNum}/arrival_station = 3-letter arrival station code
 ${prefix}/journey_${rowNum}/arrival_time_scheduled = hh:mm time
 ${prefix}/journey_${rowNum}/arrival_time_actual = hh:mm time or "Cancelled"
 ${prefix}/journey_${rowNum}/arrival_on_time = "true" or "false"
+${prefix}/journey_${rowNum}/json = all of the above as a JSON object
 ```
 
 ## Quick-Start Docker-Compose Example
