@@ -39,6 +39,7 @@ func doUpdate(settings *Settings) {
 		panic(err)
 	}
 
+	// TODO: get services in a loop using timeOffset to fetch later departures
 	services, err := getDepartures(settings)
 	if err != nil {
 		l.Error("Failed to get train services")
