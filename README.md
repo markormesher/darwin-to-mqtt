@@ -1,70 +1,67 @@
 ![CircleCI](https://img.shields.io/circleci/build/github/markormesher/darwin-to-mqtt)
 
-# darwin-to-mqtt
+# Darwin to MQTT
 
-A simple utility to query the UK National Rail [Darwin API](https://www.nationalrail.co.uk/100296.aspx) for departures from your local station and post the results to an MQTT server. Queries are executed via [@mattsalt](https://github.com/mattsalt)'s [national-rail-darwin](https://github.com/mattsalt/national-rail-darwin) library, which does all the hard work here.
+A simple utility to query the UK [Rail Data Marketplace](https://raildata.org.uk) for departures from your local station and post the results to an MQTT server.
 
-:rocket: Jump to [quick-start example](#quick-start-docker-compose-example).
+## Configuration
 
-:whale: See releases on [ghcr.io](https://ghcr.io/markormesher/darwin-to-mqtt).
+Configuration is via environment variables:
 
-## Configuration via Environment Variables
+- `MQTT_CONNECTION_STRING` - MQTT connection string, including protocol, host and port (default: `mqtt://0.0.0.0:1883`).
+- `MQTT_TOPIC_PREFIX` - topix prefix (default: `darwin`).
+- `UPDATE_INTERVAL` - interval in seconds for updates; if this is <= 0 then the program will run once and exit (default: `0`).
+- `MAX_PUBLISH_QUANTITY` - maximum number of journeys that will be published (default: `5`).
+  - If fewer journey are available an empty string will be published to the remaining topics.
+- `API_TOKEN` - client key from the Rail Data Marketplace (see [API Access](#api-access)).
+- `DEPARTURE_STATION` - 3-letter CRS code for your local station; the tool will show departures from here.
+- `ARRIVAL_STATIONS` - semicolon-separated list of 3-letter CRS codes that you want to see journeys towards.
 
-All arguments are required if they do not have a default value listed below. 3-letter station codes can be found by searching on National Rail's [journey planner](https://www.nationalrail.co.uk).
+3-letter station CRS codes can be found by searching on National Rail's [journey planner](https://www.nationalrail.co.uk). They must always be specified in upper-case.
 
-- `DARWIN_TOKEN` - your Darwin API token, which you can sign up for [here](http://realtime.nationalrail.co.uk/OpenLDBWSRegistration).
-- `MQTT_HOST` - must include the `mqtt://...` prefix and any non-default port number.
-- `TOPIC_PREFIX` - MQTT topic prefix, defaults to `darwin/state`.
-- `LOCAL_STATION` - 3-letter station code for your local station, which the tool will show departures from.
-- `DEST_STATIONS` - comma-separated list of 3-letter station codes to show journeys for.
-- `ROWS_TO_PUBLISH` - maximum number of journeys to publish, defaults to 5.
-- `REFRESH_INTERVAL_MS` - how often to update the data, defaults to 60,000 (1 minute), which is also the minimum allowed value.
-- `HEALTH_CHECK_SERVER_PORT` - HTTP port to provide a health check endpoint on, defaults to 8080.
+## MQTT Topics
 
-## MQTT Topics and Messages
+- `${prefix}/_meta/last_seen` - RFC3339 timestamp of when the program most last ran.
+- `${prefix}/state/journey_$i` - JSON representation of journey `i`, starting at 1 and going up to `$MAX_PUBLISH_QUANTITY`.
 
-### System Information
+Each journey takes the following form:
 
-```
-${prefix}/status = "online" or "offline", retained as birth/last will message
-${prefix}/last_seen = ISO datetime string of the last time journeys were published
-```
+```jsonc
+{
+  "serviceId": "abcd1234",
+  "cancelled": false,
+  "platform": "1",
+  "operator": "Full Operator Name",
+  "operatorCode": "ABC",
 
-### Per Journey
+  // origin: the first calling point of this service, which may be before $DEPARTURE_STATION
+  "originStationCrs": "ABC",
+  "originStationName": "Full Station Name",
 
-Note: `rowNum` starts at 1.
+  // destination: the final calling point of this service, which may be after any $ARRIVAL_STATIONS
+  "destinationStationCrs": "ABC",
+  "destinationStationName": "Full Station Name",
 
-```
-${prefix}/journey_${rowNum}/departure_station = always the local 3-letter station code
-${prefix}/journey_${rowNum}/departure_time_scheduled = hh:mm time
-${prefix}/journey_${rowNum}/departure_time_actual = hh:mm time or "Cancelled"
-${prefix}/journey_${rowNum}/departure_on_time = "true" or "false"
-${prefix}/journey_${rowNum}/arrival_station = 3-letter arrival station code
-${prefix}/journey_${rowNum}/arrival_time_scheduled = hh:mm time
-${prefix}/journey_${rowNum}/arrival_time_actual = hh:mm time or "Cancelled"
-${prefix}/journey_${rowNum}/arrival_on_time = "true" or "false"
-${prefix}/journey_${rowNum}/json = all of the above as a JSON object
-```
+  // departure from your $DEPARTURE_STATION
+  "departureStationCrs": "ABC",
+  "departureStationName": "Full Station Name",
+  "departureTimeScheduled": "hh:mm",
+  "departureTimeExpected": "hh:mm",
+  "departureOnTime": true,
 
-## Quick-Start Docker-Compose Example
-
-This example would report departures from Barnehurst (BNH) to Charing Cross (CHX), Victoria (VIC) or Cannon Street (CST).
-
-```yaml
-version: "3.8"
-
-services:
-  darwin-to-mqtt:
-    image: ghcr.io/markormesher/darwin-to-mqtt:VERSION
-    environment:
-      - DARWIN_TOKEN=abc
-      - MQTT_HOST=mqtt://your-mqtt-host
-      - TOPIC_PREFIX=darwin/state
-      - LOCAL_STATION=BNH
-      - DEST_STATIONS=CHX,VIC,CST
-      - ROWS_TO_PUBLISH=5
+  // arrival at the first of your $ARRIVAL_STATIONS that this service visits
+  "arrivalStationCrs": "ABC",
+  "arrivalStationName": "Full Station Name",
+  "arrivalTimeScheduled": "hh:mm",
+  "arrivalTimeExpected": "hh:mm",
+  "arrivalOnTime": true
+}
 ```
 
-## Health Check
+## API Access
 
-Unless disabled by setting the environment variable `HEALTH_CHECK_SERVER_PORT` to `-1`, a basic health check endpoint is available at `/health` on the port specified. If a successful update as run in the last `2 * REFRESH_INTERVAL_MS` it will return 200, otherwise 500.
+Access to the [Rail Data Marketplace](https://raildata.org.uk) is free for the service that powers this tool. Follow these steps to get access:
+
+1. Register for a new account on the marketplace and activate it. You only need "consumer" access, not "publisher".
+1. Subscribe to the "Live Departure Board" service. It should be approved immediately.
+1. From your subscriptions page, click through to the "Live Departure Board" service, select the "Specification" tab, and use the "Consumer key" as your `API_TOKEN`.
