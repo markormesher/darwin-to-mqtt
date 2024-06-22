@@ -12,6 +12,7 @@ Configuration is via environment variables:
 - `MQTT_TOPIC_PREFIX` - topix prefix (default: `darwin`).
 - `UPDATE_INTERVAL` - interval in seconds for updates; if this is <= 0 then the program will run once and exit (default: `0`).
 - `MAX_PUBLISH_QUANTITY` - maximum number of journeys that will be published (default: `5`).
+  - The number of journeys published may be less than this, as the tool will only consider journeys that depart on the current day.
   - If fewer journey are available an empty string will be published to the remaining topics.
 - `API_TOKEN` - client key from the Rail Data Marketplace (see [API Access](#api-access)).
 - `DEPARTURE_STATION` - 3-letter CRS code for your local station; the tool will show departures from here.

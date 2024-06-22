@@ -4,7 +4,9 @@ import (
 	"encoding/json"
 	"fmt"
 	"io"
+	"math"
 	"net/http"
+	"time"
 )
 
 type ApiResponse struct {
@@ -67,8 +69,25 @@ type TrainService struct {
 
 var baseUrl = "https://api1.raildata.org.uk/1010-live-departure-board-dep/LDBWS/api/20220120/GetDepBoardWithDetails"
 
-func getDepartures(settings *Settings) ([]TrainService, error) {
-	url := fmt.Sprintf("%s/%s", baseUrl, settings.DepartureStation)
+func getDepartures(settings *Settings, fetchAfter string) ([]TrainService, error) {
+	var fetchAfterHour, fetchAfterMinute int
+	_, err := fmt.Sscanf(fetchAfter, "%02d:%02d", &fetchAfterHour, &fetchAfterMinute)
+	if err != nil {
+		return nil, fmt.Errorf("Failed to parse fetch-after time: %w", err)
+	}
+
+	now := time.Now()
+	fetchAfterTime := time.Date(now.Year(), now.Month(), now.Day(), fetchAfterHour, fetchAfterMinute, now.Second(), now.Nanosecond(), now.Location())
+
+	if fetchAfterTime.Compare(now) < 0 {
+		// we've wrapped around to tomorrow, so return empty to end the looping
+		return []TrainService{}, nil
+	}
+
+	offsetMinutes := math.Floor(fetchAfterTime.Sub(now).Minutes())
+	l.Info("Fetching journeys with offset", "fetchAfter", fetchAfter, "offsetMinutes", offsetMinutes)
+
+	url := fmt.Sprintf("%s/%s?timeOffset=%d", baseUrl, settings.DepartureStation, int(offsetMinutes))
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("x-apikey", settings.ApiToken)
 
