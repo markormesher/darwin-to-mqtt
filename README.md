@@ -65,3 +65,5 @@ Access to the [Rail Data Marketplace](https://raildata.org.uk) is free for the s
 1. Register for a new account on the marketplace and activate it. You only need "consumer" access, not "publisher".
 1. Subscribe to the "Live Departure Board" service. It should be approved immediately.
 1. From your subscriptions page, click through to the "Live Departure Board" service, select the "Specification" tab, and use the "Consumer key" as your `API_TOKEN`.
+
+Note: there is an older National Rail API called Darwin - v0 of this tool used that API, hence the name.
