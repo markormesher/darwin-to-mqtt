@@ -2,6 +2,8 @@
 
 # Darwin to MQTT
 
+⚠️ **Upgrading from 0.x?** 1.x is a complete re-write, so configuration, output format and the API token you need have all changed! See below for details of the new tool.
+
 A simple utility to query the UK [Rail Data Marketplace](https://raildata.org.uk) for departures from your local station and post the results to an MQTT server.
 
 ## Configuration
