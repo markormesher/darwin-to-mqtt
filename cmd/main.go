@@ -59,7 +59,6 @@ func doUpdate(settings *Settings) {
 			for _, cp := range service.CallingPoints {
 				if slices.Contains(settings.ArrivalStations, cp.Crs) {
 					matchedCallingPoint = &cp
-					break
 				}
 			}
 
