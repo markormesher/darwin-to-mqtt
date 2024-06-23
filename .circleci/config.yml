@@ -74,13 +74,22 @@ workflows:
   version: 2
   main:
     jobs:
-      - setup
+      - setup:
+          filters:
+            tags:
+              only: /.*/
       - lint:
           requires:
             - setup
+          filters:
+            tags:
+              only: /.*/
       - build:
           requires:
             - setup
+          filters:
+            tags:
+              only: /.*/
       - publish:
           requires:
             - lint
