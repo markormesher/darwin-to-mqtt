@@ -13,7 +13,7 @@
     "national-rail-darwin": "^1.0.8"
   },
   "devDependencies": {
-    "@dragonlabs/eslint-config": "^0.0.13",
+    "@dragonlabs/eslint-config": "^0.0.25",
     "@types/node": "^18.11.18",
     "@types/ws": "^8.5.4",
     "@typescript-eslint/eslint-plugin": "^4.28.0",
