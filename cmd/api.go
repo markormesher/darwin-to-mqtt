@@ -80,13 +80,17 @@ func getDepartures(settings *Settings, fetchAfter string) ([]TrainService, error
 	fetchAfterTime := time.Date(now.Year(), now.Month(), now.Day(), fetchAfterHour, fetchAfterMinute, now.Second(), now.Nanosecond(), now.Location())
 
 	if fetchAfterTime.Compare(now) < 0 {
-		// we've wrapped around to tomorrow, so return empty to end the looping
-		return []TrainService{}, nil
+		// the time was wrapped around to tomorrow so add 1 day
+		fetchAfterTime = fetchAfterTime.Add(24 * time.Hour)
 	}
 
 	offsetMinutes := math.Floor(fetchAfterTime.Sub(now).Minutes())
-	l.Info("Fetching journeys with offset", "fetchAfter", fetchAfter, "offsetMinutes", offsetMinutes)
+	if offsetMinutes > 120 {
+		// the API won't return anything after 2 hours, so don't bother making the call
+		return []TrainService{}, nil
+	}
 
+	l.Info("Fetching journeys with offset", "fetchAfter", fetchAfter, "offsetMinutes", offsetMinutes)
 	url := fmt.Sprintf("%s/%s?timeOffset=%d", baseUrl, settings.DepartureStation, int(offsetMinutes))
 	req, _ := http.NewRequest("GET", url, nil)
 	req.Header.Add("x-apikey", settings.ApiToken)
