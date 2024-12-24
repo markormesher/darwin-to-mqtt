@@ -16,6 +16,6 @@ WORKDIR /app
 LABEL image.registry=ghcr.io
 LABEL image.name=markormesher/darwin-to-mqtt
 
-COPY --from=builder /app/build /usr/local/bin/darwin-to-mqtt
+COPY --from=builder /app/build/main /usr/local/bin/darwin-to-mqtt
 
 CMD ["/usr/local/bin/darwin-to-mqtt"]
