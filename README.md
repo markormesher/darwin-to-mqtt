@@ -24,7 +24,7 @@ Configuration is via environment variables:
 
 ## MQTT Topics
 
-- `${prefix}/_meta/last_seen` - RFC3339 timestamp of when the program most last ran.
+- `${prefix}/_meta/last_seen` - RFC3339 timestamp of when the program last ran.
 - `${prefix}/state/journey_$i` - JSON representation of journey `i`, starting at 1 and going up to `$MAX_PUBLISH_QUANTITY`.
 
 Each journey takes the following form:
