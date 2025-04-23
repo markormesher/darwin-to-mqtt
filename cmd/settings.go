@@ -34,7 +34,7 @@ func getSettings() (*Settings, error) {
 	}
 	updateInterval, err := strconv.Atoi(updateIntervalStr)
 	if err != nil {
-		return nil, fmt.Errorf("Could not parse update interval as an integer: %w", err)
+		return nil, fmt.Errorf("could not parse update interval as an integer: %w", err)
 	}
 
 	maxPublishQuantityStr := os.Getenv("MAX_PUBLISH_QUANTITY")
@@ -43,7 +43,7 @@ func getSettings() (*Settings, error) {
 	}
 	maxPublishQuantity, err := strconv.Atoi(maxPublishQuantityStr)
 	if err != nil {
-		return nil, fmt.Errorf("Could not parse max publish quantity as an integer: %w", err)
+		return nil, fmt.Errorf("could not parse max publish quantity as an integer: %w", err)
 	}
 
 	apiToken := os.Getenv("API_TOKEN")
