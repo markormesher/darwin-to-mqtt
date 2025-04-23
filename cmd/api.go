@@ -73,7 +73,7 @@ func getDepartures(settings *Settings, fetchAfter string) ([]TrainService, error
 	var fetchAfterHour, fetchAfterMinute int
 	_, err := fmt.Sscanf(fetchAfter, "%02d:%02d", &fetchAfterHour, &fetchAfterMinute)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to parse fetch-after time: %w", err)
+		return nil, fmt.Errorf("failed to parse fetch-after time: %w", err)
 	}
 
 	now := time.Now()
@@ -97,18 +97,18 @@ func getDepartures(settings *Settings, fetchAfter string) ([]TrainService, error
 
 	resp, err := http.DefaultClient.Do(req)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to fetch departures: %w", err)
+		return nil, fmt.Errorf("failed to fetch departures: %w", err)
 	}
 
 	resBytes, err := io.ReadAll(resp.Body)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to read API response: %w", err)
+		return nil, fmt.Errorf("failed to read API response: %w", err)
 	}
 
 	var rawData ApiResponse
 	err = json.Unmarshal(resBytes, &rawData)
 	if err != nil {
-		return nil, fmt.Errorf("Failed to unmarshal API response: %w", err)
+		return nil, fmt.Errorf("failed to unmarshal API response: %w", err)
 	}
 
 	result := make([]TrainService, 0)
