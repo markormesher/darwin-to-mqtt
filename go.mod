@@ -1,6 +1,6 @@
 module github.com/markormesher/darwin-to-mqtt
 
-go 1.24.3
+go 1.24.4
 
 require github.com/eclipse/paho.mqtt.golang v1.5.0
 
