@@ -103,7 +103,7 @@ func doUpdate(settings *Settings) {
 
 	for i := range settings.MaxPublishQuantity {
 		topic := fmt.Sprintf("state/journey_%d", i+1)
-		if i <= len(publishedDepartures) {
+		if i < len(publishedDepartures) {
 			mqttClient.publish(topic, publishedDepartures[i])
 		} else {
 			mqttClient.publish(topic, "")
