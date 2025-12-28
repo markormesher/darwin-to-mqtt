@@ -100,14 +100,17 @@ func doUpdate(settings *Settings) {
 	}
 
 	mqttClient.publish("_meta/last_seen", time.Now().Format(time.RFC3339))
-	for i := 1; i <= settings.MaxPublishQuantity; i++ {
-		topic := fmt.Sprintf("state/journey_%d", i)
+
+	for i := range settings.MaxPublishQuantity {
+		topic := fmt.Sprintf("state/journey_%d", i+1)
 		if i <= len(publishedDepartures) {
-			mqttClient.publish(topic, publishedDepartures[i-1])
+			mqttClient.publish(topic, publishedDepartures[i])
 		} else {
 			mqttClient.publish(topic, "")
 		}
 	}
+
+	mqttClient.publish("state/all_journeys", publishedDepartures[0:settings.MaxPublishQuantity])
 }
 
 func main() {
