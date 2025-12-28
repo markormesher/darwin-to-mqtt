@@ -26,6 +26,7 @@ Configuration is via environment variables:
 
 - `${prefix}/_meta/last_seen` - RFC3339 timestamp of when the program last ran.
 - `${prefix}/state/journey_$i` - JSON representation of journey `i`, starting at 1 and going up to `$MAX_PUBLISH_QUANTITY`.
+- `${prefix}/state/all_journeys` - As above, but with all journeys presented in a single JSON array.
 
 Each journey takes the following form:
 
