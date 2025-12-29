@@ -108,7 +108,7 @@ func doUpdate(settings *Settings) {
 		}
 	}
 
-	mqttClient.publish("state/all_journeys", publishedDepartures[0:min(len(published Departures), settings.MaxPublishQuantity)])
+	mqttClient.publish("state/all_journeys", publishedDepartures[0:min(len(publishedDepartures), settings.MaxPublishQuantity)])
 
 	mqttClient.publish("_meta/last_seen", time.Now().Format(time.RFC3339))
 }
