@@ -12,7 +12,7 @@ RUN go build -o ./build/main ./cmd/...
 
 # ---
 
-FROM ghcr.io/markormesher/scratch:v0.4.9@sha256:768793be24576cc7d764a9f0dae447654c7a860be41309de9f2f7855b1af24b7
+FROM ghcr.io/markormesher/scratch:v0.4.10@sha256:50e90f252c2c5282a4e4895274089ce3b349fb10e77a517fd05721ca4ae1bbe2
 WORKDIR /app
 
 LABEL image.registry=ghcr.io
