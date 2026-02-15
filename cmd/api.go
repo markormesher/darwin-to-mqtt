@@ -141,22 +141,24 @@ func getDepartures(settings *Settings, fetchAfter string) ([]TrainService, error
 			service.OnTime = false
 		}
 
-		for _, rawCp := range rawService.SubsequentCallingPoints[0].CallingPoints {
-			cp := CallingPoint{
-				Crs:           rawCp.Crs,
-				Name:          rawCp.Name,
-				ScheduledTime: rawCp.ScheduledTime,
-			}
+		if len(rawService.SubsequentCallingPoints) > 0 {
+			for _, rawCp := range rawService.SubsequentCallingPoints[0].CallingPoints {
+				cp := CallingPoint{
+					Crs:           rawCp.Crs,
+					Name:          rawCp.Name,
+					ScheduledTime: rawCp.ScheduledTime,
+				}
 
-			if rawCp.ExpectedTime == "On time" {
-				cp.ExpectedTime = cp.ScheduledTime
-				cp.OnTime = true
-			} else {
-				cp.ExpectedTime = rawCp.ExpectedTime
-				cp.OnTime = false
-			}
+				if rawCp.ExpectedTime == "On time" {
+					cp.ExpectedTime = cp.ScheduledTime
+					cp.OnTime = true
+				} else {
+					cp.ExpectedTime = rawCp.ExpectedTime
+					cp.OnTime = false
+				}
 
-			service.CallingPoints = append(service.CallingPoints, cp)
+				service.CallingPoints = append(service.CallingPoints, cp)
+			}
 		}
 
 		result = append(result, service)
