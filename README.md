@@ -1,4 +1,3 @@
-![CircleCI](https://img.shields.io/circleci/build/github/markormesher/darwin-to-mqtt)
 
 # Darwin to MQTT
 
