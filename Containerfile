@@ -12,7 +12,7 @@ RUN go build -o ./build/main ./cmd/...
 
 # ---
 
-FROM ghcr.io/markormesher/scratch:v0.4.29@sha256:84ed92290e059be936fcefcc46e13a513ed22f81d9381cffb47297a5ea071466
+FROM ghcr.io/markormesher/scratch:v0.4.30@sha256:72d47942c3c4b0d5b5ea59fc2ee6b71ac1ece860f5816c305f41f03e9632db2a
 WORKDIR /app
 
 COPY --from=builder /app/build/main /usr/local/bin/darwin-to-mqtt
