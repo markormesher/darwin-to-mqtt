@@ -4,7 +4,7 @@ go 1.26.0
 
 toolchain go1.27.4
 
-require github.com/eclipse/paho.mqtt.golang v1.5.1
+require github.com/eclipse/paho.mqtt.golang v1.5.2
 
 require (
 	github.com/BurntSushi/toml v1.4.1-0.20240526193622-a339e1f7089c // indirect
